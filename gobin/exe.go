@@ -31,9 +31,11 @@ func openExe(r io.Reader) (exe, error) {
 	br := bytes.NewReader(b)
 
 	data := make([]byte, 16)
+	// MEMO: binary形式などの情報がある先頭16byteだけ読む.
 	if _, err := io.ReadFull(br, data); err != nil {
 		return nil, err
 	}
+	// MEMO: brをstartに戻す
 	br.Seek(0, 0)
 
 	if bytes.HasPrefix(data, []byte("\x7FELF")) {
@@ -67,8 +69,12 @@ type elfExe struct {
 	f *elf.File
 }
 
+// MEMO: addrで渡したsegmentに関して近いaddrのデータを読んで返す.
+// まあそれなりに雑に読んでる.
 func (x *elfExe) ReadData(addr, size uint64) ([]byte, error) {
 	for _, prog := range x.f.Progs {
+		// MEMO: prog.Vaddr -> セグメントのロード先アドレス(segmentの先頭addr)
+		//       prog.Filesz -> セグメントのサイズ
 		if prog.Vaddr <= addr && addr <= prog.Vaddr+prog.Filesz-1 {
 			n := prog.Vaddr + prog.Filesz - addr
 			if n > size {
@@ -85,12 +91,16 @@ func (x *elfExe) ReadData(addr, size uint64) ([]byte, error) {
 	return nil, fmt.Errorf("address not mapped")
 }
 
+// buildinfoを保持する領域(.go.buildinfoのセクションもしくはp.Vaddrで表されるセグメント)
+// の先頭addrを返す
 func (x *elfExe) DataStart() uint64 {
 	for _, s := range x.f.Sections {
+		// MEMO: elfだとこういうsection自体が作られるみたい。
 		if s.Name == ".go.buildinfo" {
 			return s.Addr
 		}
 	}
+	// MEMO: Program Headerからも探索
 	for _, p := range x.f.Progs {
 		if p.Type == elf.PT_LOAD && p.Flags&(elf.PF_X|elf.PF_W) == elf.PF_W {
 			return p.Vaddr

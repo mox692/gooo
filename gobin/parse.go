@@ -112,6 +112,7 @@ func findVers(x exe) (vers, mod string) {
 }
 
 // readString returns the string at address addr in the executable x.
+// MEMO: addrを起点にして、2*ptrSizeの大きさのデータ()をxからreadする
 func readString(x exe, ptrSize int, readPtr func([]byte) uint64, addr uint64) string {
 	hdr, err := x.ReadData(addr, uint64(2*ptrSize))
 	if err != nil || len(hdr) < 2*ptrSize {

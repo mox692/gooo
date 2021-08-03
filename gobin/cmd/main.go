@@ -7,7 +7,7 @@ import (
 	"github.com/mox692/gooo/gobin"
 )
 
-var fileName = "./cmd/main"
+var fileName = "/Users/kimuramotoyuki/go/src/github.com/mox692/gooo/gobin/cmd/main"
 
 func main() {
 	f, err := os.Open(fileName)
