@@ -13,7 +13,7 @@
 	0x0010 24 14 01 c3                                      $...
 "".main STEXT size=66 args=0x0 locals=0x18
 	0x0000 00000 (main.go:8)	TEXT	"".main(SB), ABIInternal, $24-0	;; 今度は24byteのstack flameをとり、stack自体はしたに伸ばさないらしい(引数を受け取らず、返り値も返さない)。
-	0x0000 00000 (main.go:8)	MOVQ	(TLS), CX	;; TLSとは？？
+	0x0000 00000 (main.go:8)	MOVQ	(TLS), CX	;; TLSとは？？  TLSはランタイムによって管理される仮想のレジスタで現在のgを指すポインタを持っています。
 	0x0009 00009 (main.go:8)	CMPQ	SP, 16(CX)  ;; SPとCXから16先の値を比較してる
 	0x000d 00013 (main.go:8)	PCDATA	$0, $-2		;; ?
 	0x000d 00013 (main.go:8)	JLS	58				;; ?
