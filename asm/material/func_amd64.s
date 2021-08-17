@@ -3,7 +3,7 @@
     basics
 */
 TEXT ·add32(SB),$0-12   // MEMO: なぜか引数と返り値の間には謎のallignmentが入るみたい。引数は4byteの変数1つだけど、8byte分使うことになる
-                        // 追記: 「GoのABIは戻り値の開始位置はワード長でアラインされるようです」ということらしい
+                        // 追記: 「GoのABIは戻り値の開始位置はワード長でアラインされるようです」ということらしい.
     MOVL a+0(FP),AX     // 0(FP)は第一引数, 
     ADDL $2, AX
     MOVL AX, ret+8(FP)
@@ -26,12 +26,12 @@ TEXT ·add64(SB),$0-16   // MEMO: 引数:返り値が8byte:8byte
     slice
 */
 TEXT ·sliceLen(SB),$0-32    // MEMO: sliceは「1. arrayへの先頭ptr(8byte), 2.len(8byte), 3. cap(8byte)」の24byteで表現される
-    MOVQ b_len+8(FP),AX
+    MOVQ b_len+8(FP),AX     // b_lenっていうシンボルが勝手に作られるみたい。
     MOVQ AX, ret+24(FP)
     RET
 
 TEXT ·sliceCap(SB),$0-32
-    MOVQ b_cap+16(FP),AX
+    MOVQ b_cap+16(FP),AX    // b_capも勝手に作られるらしい
     MOVQ AX, ret+24(FP)
     RET
 
@@ -43,7 +43,7 @@ TEXT ·sliceBase(SB),$0-32
 /*
     caller
 */
-TEXT ·caller(SB),$24-16
+TEXT ·caller(SB),$24-16     // 内部で関数をcallする場合はstack flameのサイズ(この場合24byte)も記載しておく
     MOVL i+0(FP), AX
     ADDL $2, AX
     MOVL AX, ret1+8(FP)
