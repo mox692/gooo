@@ -4,6 +4,8 @@ import "testing"
 
 // AIM: レシーバを色々変えてみる
 // 結果: ptrレシーバだろうが、値だろうが、関数内で宣言した変数のptrを返すとescapeされる。。
+// 考察: local変数は基本的にはstackに置かれるが、そのアドレスが返される(stackのscope外に出る)となると
+//       その値をどこか別の場所(heap)においておく必要が出てくる
 
 type person struct {
 	name string
